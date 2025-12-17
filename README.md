@@ -1,70 +1,111 @@
-# Getting Started with Create React App
+# HNTD Client
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React frontend for the HNTD (Haunted Location Finder) application. Discover and share haunted locations across the country.
 
-## Available Scripts
+## Technologies
 
-In the project directory, you can run:
+- React 18
+- React Router DOM
+- CSS3 (Custom styling with dark/purple theme)
+- Backblaze B2 (Image uploads via API)
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- User authentication (login, register, logout)
+- Browse haunted locations with search and filters
+- View detailed location information
+- Add/remove locations to favorites
+- Create, edit, and delete your own locations
+- User profile with image upload
+- Responsive design for mobile and desktop
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Prerequisites
 
-### `npm test`
+- [Node.js](https://nodejs.org/)
+- [npm](https://www.npmjs.com/)
+- [HNTD API](https://github.com/yourusername/HntdApi)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Getting Started
 
-### `npm run build`
+### 1. Clone the Repository
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+git clone https://github.com/christophuff/HNTD-Client.git
+cd HNTD-Client
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Install Dependencies
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm install
+```
 
-### `npm run eject`
+### 3. Configure Environment Variables
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Create a `.env` file in the root directory:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```env
+REACT_APP_API_URL=http://localhost:5104/api
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+**Note:** Make sure this matches the port your backend API is running on.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 4. Start the Backend API
 
-## Learn More
+Make sure the [HNTD API](https://github.com/christophuff/HntdApi) is running before starting the frontend. See the API README for setup instructions.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 5. Start the Development Server
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+npm start
+```
 
-### Code Splitting
+The app will open in your browser at `http://localhost:3000`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Key Concepts
 
-### Analyzing the Bundle Size
+### Authentication Flow
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. User logs in with email/password
+2. Credentials are Base64 encoded and sent via Authorization header
+3. Backend validates and returns a session cookie
+4. Cookie is automatically sent with all subsequent requests
+5. `getMe()` on app load checks if session is valid
 
-### Making a Progressive Web App
+### Managers
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+API calls are organized into manager files:
+- `authManager.js` - Login, logout, register, profile updates
+- `locationManager.js` - CRUD operations for haunted locations
+- `favoritesManager.js` - Add/remove favorites
+- `filterManager.js` - Fetch filter options (types, levels, activities)
+- `imageManager.js` - Upload images to Backblaze via API
 
-### Advanced Configuration
+## Troubleshooting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### "Failed to fetch" errors
+- Make sure the backend API is running on `http://localhost:5104`
+- Check that CORS is configured correctly on the backend
+- Verify your `.env` file has the correct API URL
 
-### Deployment
+### Login not persisting after refresh
+- Ensure `credentials: "include"` is set in all fetch requests
+- Backend must have `AllowCredentials()` in CORS configuration
+- Check browser isn't blocking third-party cookies
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Images not displaying
+- Backblaze bucket must be set to Public
+- Check browser console for 404 errors on image URLs
+- Verify the image URL was saved to the database
 
-### `npm run build` fails to minify
+### Styling issues
+- Clear browser cache and refresh
+- Check for CSS conflicts in browser dev tools
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Building for Production
+
+```bash
+npm run build
+```
+
+This creates an optimized build in the `build/` folder ready for deployment.
